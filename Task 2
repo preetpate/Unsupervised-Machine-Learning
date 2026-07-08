@@ -1,0 +1,97 @@
+1. Manual Point Assignment (Euclidean Distance)Let's break down the manual assignment step-by-step using standard mathematical procedures.The Dataset$P_1 = [2, 3]$$P_2 = [5, 8]$$P_3 = [1, 2]$$P_4 = [6, 9]$$P_5 = [7, 7]$
+
+Step 1: Choosing Random Initial CentroidsLet's randomly select two points from our dataset to act as initial centroids:Centroid 1 ($C_1$): $[2, 3]$ (Point 1)Centroid 2 ($C_2$): $[7, 7]$ (Point 5)
+
+import math
+
+def assign_clusters(points, centroids, metric='euclidean'):
+    assignments = []
+    
+    for p in points:
+        min_dist = float('inf')
+        best_cluster = -1
+        
+        for c_idx, c in enumerate(centroids):
+            if metric.lower() == 'euclidean':
+                # Straight-line distance
+                dist = math.sqrt(sum((pi - ci) ** 2 for pi, ci in zip(p, c)))
+            elif metric.lower() == 'manhattan':
+                # Grid-like distance
+                dist = sum(abs(pi - ci) for pi, ci in zip(p, c))
+            else:
+                raise ValueError("Metric must be either 'euclidean' or 'manhattan'")
+            
+            if dist < min_dist:
+                min_dist = dist
+                best_cluster = c_idx
+                
+        assignments.append(best_cluster)
+        
+    return assignments
+
+# Quick sanity check with Task 1 data
+points_list = [[2,3], [5,8], [1,2], [6,9], [7,7]]
+initial_centroids = [[2,3], [7,7]]
+
+euclidean_res = assign_clusters(points_list, initial_centroids, metric='euclidean')
+manhattan_res = assign_clusters(points_list, initial_centroids, metric='manhattan')
+
+def update_centroids(points, assignments, k):
+    # Initialize empty coordinate trackers and counters for k clusters
+    dimensions = len(points[0])
+    new_centroids = [[0.0] * dimensions for _ in range(k)]
+    counts = [0] * k
+    
+    # Sum up all matching coordinates
+    for p, cluster_idx in zip(points, assignments):
+        counts[cluster_idx] += 1
+        for dim in range(dimensions):
+            new_centroids[cluster_idx][dim] += p[dim]
+            
+    # Compute the true mathematical mean
+    for cluster_idx in range(k):
+        if counts[cluster_idx] > 0:
+            for dim in range(dimensions):
+                new_centroids[cluster_idx][dim] /= counts[cluster_idx]
+        else:
+            # Fallback handle if a cluster ends up completely empty
+            new_centroids[cluster_idx] = [0.0] * dimensions
+            
+    return new_centroids
+
+# Testing with our manual dataset assignments
+test_assignments = [0, 1, 0, 1, 1] # Matching our Task 1 output
+updated = update_centroids(points_list, test_assignments, k=2)
+print("Updated Centroids:", updated)
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
+# Generating mock restaurant dataset: [Avg Price per Person ($), Rating (1-5)]
+np.random.seed(24)
+group_1 = np.random.normal(loc=[15, 3.2], scale=[3, 0.3], size=(30, 2))  # Cheap, average ratings
+group_2 = np.random.normal(loc=[45, 4.5], scale=[5, 0.2], size=(30, 2))  # Mid-high tier, excellent reviews
+group_3 = np.random.normal(loc=[110, 4.2], scale=[10, 0.4], size=(30, 2)) # High luxury, good reviews
+X = np.vstack([group_1, group_2, group_3])
+
+wcss = []
+k_range = range(1, 7)
+
+for k in k_range:
+    kmeans = KMeans(n_clusters=k, init='k-means++', random_state=42, n_init=10)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+
+# Plotting the Elbow Curve
+plt.figure(figsize=(8, 5))
+plt.plot(k_range, wcss, marker='o', linestyle='--', color='b')
+plt.title('Elbow Method for Optimal Restaurant Segmentation Clusters')
+plt.xlabel('Number of Clusters (k)')
+plt.ylabel('WCSS (Inertia)')
+plt.xticks(k_range)
+plt.grid(True)
+plt.show()
+
+print("Euclidean Assignments:", euclidean_res)
+print("Manhattan Assignments:", manhattan_res)
