@@ -1,0 +1,115 @@
+orders = pd.DataFrame({
+    "delivery_time": [20, 25, 30, 45, 50, 60],
+    "distance": [2, 3, 5, 8, 9, 11]
+})
+
+print(orders)
+
+Agglomerative Clustering on Songs Dataset
+Dataset
+songs = pd.DataFrame({
+    "tempo":[120,125,128,90,88,92,140,145],
+    "energy":[0.8,0.85,0.82,0.3,0.35,0.32,0.95,0.97]
+})
+Agglomerative Clustering
+model = AgglomerativeClustering(
+    n_clusters=3,
+    linkage='ward'
+)
+
+labels = model.fit_predict(songs)
+
+print(labels)
+Dendrogram
+linked = linkage(
+    songs,
+    method='ward'
+)
+
+plt.figure(figsize=(8,5))
+
+dendrogram(linked)
+
+plt.title("Songs Dendrogram")
+
+plt.xlabel("Song")
+
+plt.ylabel("Distance")
+
+plt.show()
+Question 3
+Change Linkage Method
+Single Linkage
+linked = linkage(
+    songs,
+    method='single'
+)
+
+dendrogram(linked)
+
+plt.show()
+Complete Linkage
+linked = linkage(
+    songs,
+    method='complete'
+)
+
+dendrogram(linked)
+
+plt.show()
+Average Linkage
+linked = linkage(
+    songs,
+    method='average'
+)
+
+dendrogram(linked)
+
+plt.show()
+
+Question 4
+Function for Euclidean and Manhattan Distance
+Manhattan Distance Formula
+∣x
+2
+	​
+
+−x
+1
+	​
+
+∣+∣y
+2
+	​
+
+−y
+1
+	​
+
+∣
+Code
+def distances(x1, y1, x2, y2):
+
+    euclidean = np.sqrt(
+        (x2-x1)**2 +
+        (y2-y1)**2
+    )
+
+    manhattan = abs(x2-x1) + abs(y2-y1)
+
+    return euclidean, manhattan
+Test 1
+print(distances(20,2,25,3))
+
+Output
+
+(5.099, 6)
+Test 2
+print(distances(25,3,30,5))
+Test 3
+print(distances(45,8,60,11))
+
+Similar Movies Feature
+Answer (Assignment)
+
+If I were building a similar movies feature, I would choose Ward linkage because it creates compact and balanced clusters by minimizing the increase in within-cluster variance. Movies with similar user rating patterns are likely to be grouped more accurately. Compared to single linkage (which can suffer from chaining) and complete linkage (which may split natural groups), Ward linkage generally produces more meaningful and stable clusters for recommendation systems when the features are numerical.
