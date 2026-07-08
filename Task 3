@@ -1,0 +1,157 @@
+import pandas as pd
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+
+# Load dataset
+df = pd.read_csv("Mall_Customers.csv")
+
+# Select features
+X = df[['Annual Income (k$)', 'Spending Score (1-100)']]
+
+# Standardize data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Apply DBSCAN
+dbscan = DBSCAN(eps=0.4, min_samples=5)
+labels = dbscan.fit_predict(X_scaled)
+
+# Number of clusters
+n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+
+# Number of noise points
+noise_points = list(labels).count(-1)
+
+print("Number of clusters :", n_clusters)
+print("Number of noise points :", noise_points)
+
+Visualize DBSCAN
+Code
+import matplotlib.pyplot as plt
+import numpy as np
+
+unique_labels = np.unique(labels)
+
+plt.figure(figsize=(8,6))
+
+for label in unique_labels:
+
+    if label == -1:
+        color = "black"
+        name = "Noise"
+    else:
+        color = plt.cm.tab10(label)
+        name = f"Cluster {label}"
+
+    plt.scatter(
+        X_scaled[labels==label,0],
+        X_scaled[labels==label,1],
+        color=color,
+        label=name
+    )
+
+plt.xlabel("Annual Income (Scaled)")
+plt.ylabel("Spending Score (Scaled)")
+plt.title("DBSCAN Clustering")
+
+plt.legend()
+
+plt.show()
+
+db1 = DBSCAN(eps=0.3, min_samples=5)
+labels1 = db1.fit_predict(X_scaled)
+
+clusters1 = len(set(labels1)) - (1 if -1 in labels1 else 0)
+noise1 = list(labels1).count(-1)
+
+print("Clusters :", clusters1)
+print("Noise :", noise1)
+
+from sklearn.cluster import KMeans
+
+# DBSCAN
+dbscan = DBSCAN(eps=0.4, min_samples=5)
+db_labels = dbscan.fit_predict(X_scaled)
+
+clusters = len(set(db_labels)) - (1 if -1 in db_labels else 0)
+
+# KMeans
+kmeans = KMeans(n_clusters=clusters, random_state=42)
+km_labels = kmeans.fit_predict(X_scaled)
+
+plt.figure(figsize=(12,5))
+
+# DBSCAN
+plt.subplot(1,2,1)
+
+plt.scatter(
+    X_scaled[:,0],
+    X_scaled[:,1],
+    c=db_labels,
+    cmap='tab10'
+)
+
+plt.title("DBSCAN")
+
+# KMeans
+plt.subplot(1,2,2)
+
+plt.scatter(
+    X_scaled[:,0],
+    X_scaled[:,1],
+    c=km_labels,
+    cmap='tab10'
+)
+
+plt.title("KMeans")
+
+plt.show()
+
+from sklearn.datasets import make_moons
+from sklearn.cluster import DBSCAN
+
+X, y = make_moons(
+    n_samples=300,
+    noise=0.08,
+    random_state=42
+)
+
+db = DBSCAN(
+    eps=0.2,
+    min_samples=5
+)
+
+labels = db.fit_predict(X)
+
+noise_indices = np.where(labels == -1)[0]
+
+print("Noise Point Indices")
+
+print(noise_indices)
+
+plt.figure(figsize=(8,6))
+
+unique_labels = np.unique(labels)
+
+for label in unique_labels:
+
+    if label == -1:
+        color = "black"
+        name = "Noise"
+
+    else:
+        color = plt.cm.tab10(label)
+        name = f"Cluster {label}"
+
+    plt.scatter(
+        X[labels==label,0],
+        X[labels==label,1],
+        color=color,
+        label=name
+    )
+
+plt.legend()
+
+plt.title("DBSCAN on make_moons")
+
+plt.show()
