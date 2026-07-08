@@ -1,0 +1,71 @@
+from sklearn.datasets import load_iris
+from scipy.cluster.hierarchy import linkage, dendrogram
+import matplotlib.pyplot as plt
+
+# Load dataset
+iris = load_iris()
+
+X = iris.data
+
+# Ward linkage
+linked = linkage(X, method='ward')
+
+# Plot dendrogram
+plt.figure(figsize=(12,6))
+
+dendrogram(linked)
+
+plt.title("Hierarchical Clustering - Ward Linkage")
+
+plt.xlabel("Samples")
+
+plt.ylabel("Distance")
+
+plt.show()
+
+
+from scipy.cluster.hierarchy import fcluster
+
+# Choose a distance threshold
+clusters = fcluster(
+    linked,
+    t=7,
+    criterion='distance'
+)
+
+# Print cluster labels
+print(clusters)
+
+# Count samples in each cluster
+unique, counts = np.unique(
+    clusters,
+    return_counts=True
+)
+
+print("\nCluster Sizes")
+
+for u, c in zip(unique, counts):
+    print("Cluster", u, ":", c)
+
+
+methods = ['ward', 'single', 'complete']
+
+plt.figure(figsize=(18,5))
+
+for i, method in enumerate(methods):
+
+    plt.subplot(1,3,i+1)
+
+    linked = linkage(
+        X,
+        method=method
+    )
+
+    dendrogram(linked)
+
+    plt.title(method.capitalize())
+
+plt.tight_layout()
+
+plt.show()
+
