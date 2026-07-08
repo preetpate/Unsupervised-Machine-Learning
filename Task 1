@@ -1,0 +1,52 @@
+import random
+
+# Seed set for reproducibility
+random.seed(42)
+
+dataset = []
+
+for user_id in range(1, 11):
+    user_data = {
+        "user_id": f"user_{user_id}",
+        "daily_app_opens": random.randint(1, 25),
+        "avg_session_duration_min": round(random.uniform(2.0, 45.0), 1)
+    }
+    dataset.append(user_data)
+
+# Print the resulting dataset
+import pprint
+pprint.pprint(dataset)
+
+Based on the criteria of Price and Popularity (Number of Reviews), the 8 products can be logically grouped into 3 distinct clusters:
+
+Cluster 1: Low-Cost, Mass-Market Essentials
+Products: Wireless Mouse ($15, 12,000 reviews), Phone Case ($12, 18,500 reviews), USB-C Cable ($8, 25,000 reviews).
+
+Reasoning: These products share a low price point (under $20) accompanied by massive review counts. They represent high-volume, affordable accessories that everyday consumers buy frequently.
+
+Cluster 2: Mid-Range Tech & Lifestyle Investments
+Products: Ergonomic Keyboard ($65, 3,400 reviews), Coffee Maker ($89, 4,100 reviews), Gym Backpack ($45, 2,800 reviews).
+
+Reasoning: This cluster represents moderately priced goods ($40 to $90) with a healthy, steady volume of reviews (thousands, but not tens of thousands). These are functional, planned purchases.
+
+Cluster 3: High-Value Premium Assets
+Products: 4K Gaming Monitor ($350, 450 reviews), Robotic Vacuum ($420, 680 reviews).
+
+Reasoning: These are high-ticket luxury items priced well over $300. Because they require a larger financial commitment, they naturally accumulate a lower volume of total reviews compared to cheaper products.
+
+Task 4: Unsupervised Learning Scenarios in Popular Platforms
+Zomato (User Eating Habits Clustering)
+
+Data Needed: Ordering timestamps, cuisine types, average order value, spice level preferences, and geographical locations.
+
+Insights Found: Discovery of behavioral micro-segments, such as "Late-night corporate snackers," "Weekend healthy family diners," or "Daily budget meal-preppers," allowing marketing teams to target them with hyper-specific notification coupons.
+
+Flipkart (Customer Return Risk Segmentation)
+
+Data Needed: Delivery-to-return time gap, delivery payment method (COD vs. Prepaid), product category history, review ratings left by the user, and percentage of orders canceled mid-transit.
+
+A classic choice for practicing clustering algorithms is the Mall Customers Dataset hosted on Kaggle.  Dataset URL Link: Mall Customers Dataset on KaggleStructure & Dimensions:
+
+Number of Features: 5 features (CustomerID, Gender, Age, Annual Income (k$), Spending Score (1-100)).
+
+Data Type: A mix of numerical features (Age, Annual Income, Spending Score), categorical strings (Gender), and unique identifiers (CustomerID).
