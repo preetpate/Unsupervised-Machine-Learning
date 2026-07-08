@@ -1,0 +1,59 @@
+import pandas as pd
+
+# Load dataset
+df = pd.read_csv("Mall_Customers.csv")
+
+# Display first 10 rows
+print(df.head(10))
+
+
+# Check missing values
+missing = df[['Age',
+              'Annual Income (k$)',
+              'Spending Score (1-100)']].isnull().sum()
+
+print(missing)
+
+plt.figure(figsize=(8,6))
+
+sns.scatterplot(
+    data=df,
+    x='Annual Income (k$)',
+    y='Spending Score (1-100)'
+)
+
+plt.title("Annual Income vs Spending Score")
+
+plt.show()
+
+plt.figure(figsize=(8,6))
+
+corr = df.corr(numeric_only=True)
+
+sns.heatmap(
+    corr,
+    annot=True,
+    cmap='coolwarm'
+)
+
+plt.title("Correlation Matrix")
+
+plt.show()
+
+
+
+from sklearn.cluster import KMeans
+
+# Select Features
+X = df[['Annual Income (k$)',
+        'Spending Score (1-100)']]
+
+# Apply KMeans
+kmeans = KMeans(
+    n_clusters=3,
+    random_state=42
+)
+
+df['Cluster'] = kmeans.fit_predict(X)
+
+print(df.head())
